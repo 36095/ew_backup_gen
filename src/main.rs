@@ -58,7 +58,7 @@ fn create_default_config_file<P: AsRef<Path>>(
 
     let ini_content = r#"[paths]
 source = "C:\\Users\\Public\\Documents\\Softouch"
-destination_base = "A:\\dev\\Rust\\ew_backup_gen\\backups\\"
+destination_base = "C:\\Users\\Public\\Documents\backups\\"
 
 [intervals]
 min_interval_seconds = 3600
@@ -258,8 +258,8 @@ async fn should_run_check_file(
         return Ok(true);
     }
 
-    if let Ok(metadata) = tokio::fs::metadata(last_run_file).await {
-        if let Ok(modified_time) = metadata.modified() {
+    if let Ok(metadata) = tokio::fs::metadata(last_run_file).await
+        && let Ok(modified_time) = metadata.modified() {
             let modified_datetime: DateTime<Local> = modified_time.into();
             let now = Local::now();
             let elapsed_duration = now.signed_duration_since(modified_datetime);
@@ -268,7 +268,6 @@ async fn should_run_check_file(
                 return Ok(true);
             }
         }
-    }
 
     Ok(false)
 }
@@ -279,11 +278,10 @@ async fn execute_backup_and_update_timestamp(
     last_run_file: &Path,
     max_backups_opt: Option<u32>,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    if let Some(max_backups) = max_backups_opt {
-        if max_backups > 0 {
+    if let Some(max_backups) = max_backups_opt
+        && max_backups > 0 {
             cleanup_old_backups(dest_base, max_backups).await?;
         }
-    }
 
     let timestamp = Local::now().format("%Y%m%d_%H%M%S").to_string();
     let dest_path = dest_base.join(format!("backup_{}", timestamp));
@@ -303,14 +301,13 @@ async fn execute_backup_and_update_timestamp(
         std::fs::create_dir_all(&dest_path_buf)?;
         let copy_result = copy(&source_buf, &dest_path_buf, &options);
 
-        if copy_result.is_err() {
-            if let Err(remove_err) = std::fs::remove_dir_all(&dest_path_buf) {
+        if copy_result.is_err()
+            && let Err(remove_err) = std::fs::remove_dir_all(&dest_path_buf) {
                 eprintln!(
                     "Advertencia: Error al eliminar directorio de backup incompleto '{:?}': {}",
                     dest_path_buf, remove_err
                 );
             }
-        }
         copy_result
     })
     .await;
@@ -342,20 +339,17 @@ async fn cleanup_old_backups(
     for entry in std::fs::read_dir(dest_base)? {
         let entry = entry?;
         let path = entry.path();
-        if path.is_dir() {
-            if let Some(file_name) = path.file_name().and_then(|n| n.to_str()) {
-                if file_name.starts_with("backup_") {
+        if path.is_dir()
+            && let Some(file_name) = path.file_name().and_then(|n| n.to_str())
+                && file_name.starts_with("backup_") {
                     // El formato es backup_YYYYMMDD_HHMMSS
-                    if let Some(timestamp_part) = file_name.strip_prefix("backup_") {
-                        if let Ok(parsed_time) =
+                    if let Some(timestamp_part) = file_name.strip_prefix("backup_")
+                        && let Ok(parsed_time) =
                             NaiveDateTime::parse_from_str(timestamp_part, "%Y%m%d_%H%M%S")
                         {
                             backup_entries.push((path, parsed_time));
                         }
-                    }
                 }
-            }
-        }
     }
 
     // Ordenar por fecha de backup ascendente (el más antiguo primero)

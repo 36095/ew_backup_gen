@@ -16,7 +16,7 @@ FILETYPE 0x1
         BLOCK "040A04B0"  // Español (España), UTF-8
         {
             VALUE "CompanyName", "The Streamer Company SpA."
-            VALUE "FileDescription", ""
+            VALUE "FileDescription", "Generador de Copias de Seguridad para EasyWorship 2009"
             VALUE "FileVersion", "0.1.0"
             VALUE "InternalName", "ew_backup_gen"
             VALUE "LegalCopyright", "Copyright © 2026 - The Streamer Company SpA. All rights reserved."
@@ -30,7 +30,7 @@ FILETYPE 0x1
         BLOCK "040A04E4"  // Español (Latinoamérica), UTF-8
         {
             VALUE "CompanyName", "The Streamer Company SpA."
-            VALUE "FileDescription", ""
+            VALUE "FileDescription", "Generador de Copias de Seguridad para EasyWorship 2009"
             VALUE "FileVersion", "0.1.0"
             VALUE "InternalName", "ew_backup_gen"
             VALUE "LegalCopyright", "Copyright © 2025 - The Streamer Company SpA. All rights reserved."
@@ -44,7 +44,7 @@ FILETYPE 0x1
         BLOCK "040904B0"  // Inglés (EE.UU.), UTF-8
         {
             VALUE "CompanyName", "The Streamer Company SpA."
-            VALUE "FileDescription", ""
+            VALUE "FileDescription", "EasyWorship 2009 Backup Generator"
             VALUE "FileVersion", "0.1.0"
             VALUE "InternalName", "ew_backup_gen"
             VALUE "LegalCopyright", "Copyright © 2025 - The Streamer Company SpA. All rights reserved."
