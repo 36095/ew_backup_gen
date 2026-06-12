@@ -1,0 +1,62 @@
+#include <winuser.h>
+
+// Icono
+IDI_ICON1 ICON "assets/icon.ico"
+
+// Información de versión
+1 VERSIONINFO
+FILEVERSION 0,1,0,0
+PRODUCTVERSION 0,1,0,0
+FILEOS 0x4
+FILETYPE 0x1
+{
+    BLOCK "StringFileInfo"
+    {
+        // Español (España)
+        BLOCK "040A04B0"  // Español (España), UTF-8
+        {
+            VALUE "CompanyName", "The Streamer Company SpA."
+            VALUE "FileDescription", ""
+            VALUE "FileVersion", "0.1.0"
+            VALUE "InternalName", "ew_backup_gen"
+            VALUE "LegalCopyright", "Copyright © 2026 - The Streamer Company SpA. All rights reserved."
+            VALUE "OriginalFilename", "ew_backup_gen.exe"
+            VALUE "ProductName", "EW Backup Gen"
+            VALUE "ProductVersion", "0.1.0"
+            VALUE "Comments", "N/A"
+        }
+
+        // Español (Latinoamérica / Internacional)
+        BLOCK "040A04E4"  // Español (Latinoamérica), UTF-8
+        {
+            VALUE "CompanyName", "The Streamer Company SpA."
+            VALUE "FileDescription", ""
+            VALUE "FileVersion", "0.1.0"
+            VALUE "InternalName", "ew_backup_gen"
+            VALUE "LegalCopyright", "Copyright © 2025 - The Streamer Company SpA. All rights reserved."
+            VALUE "OriginalFilename", "ew_backup_gen.exe"
+            VALUE "ProductName", "EW Backup Gen"
+            VALUE "ProductVersion", "0.1.0"
+            VALUE "Comments", "N/A"
+        }
+
+        // Inglés (Estados Unidos) - como respaldo
+        BLOCK "040904B0"  // Inglés (EE.UU.), UTF-8
+        {
+            VALUE "CompanyName", "The Streamer Company SpA."
+            VALUE "FileDescription", ""
+            VALUE "FileVersion", "0.1.0"
+            VALUE "InternalName", "ew_backup_gen"
+            VALUE "LegalCopyright", "Copyright © 2025 - The Streamer Company SpA. All rights reserved."
+            VALUE "OriginalFilename", "ew_backup_gen.exe"
+            VALUE "ProductName", "EW Backup Gen"
+            VALUE "ProductVersion", "0.1.0"
+            VALUE "Comments", "N/A"
+        }
+    }
+    BLOCK "VarFileInfo"
+    {
+        // Lista de traducciones disponibles
+        VALUE "Translation", 0x40A, 1200, 0x409, 1200 // Español (España), Español (LatAm), Inglés (EE.UU.), UTF-8
+    }
+}
