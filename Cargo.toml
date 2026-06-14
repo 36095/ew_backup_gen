@@ -7,11 +7,13 @@ edition = "2024"
 [dependencies]
 fs_extra = "1.3"
 tokio = { version = "1.52.3", features = ["full"] }
-tokio-cron-scheduler = "0.15.1" # Volvemos a la version problematica
+tokio-cron-scheduler = "0.15.1"
 config = { version = "0.15.23", features = ["ini"] }
 serde = { version = "1.0.228", features = ["derive"] }
 chrono = "0.4.45"
 dirs = "6.0.0"
+ctrlc = "3.5.2"
+colored = "3.1.1"
 
-[build-dependencies] # <-- Agregamos build-dependencies
-embed-resource = "3.0.9" # <-- Versión de embed-resource
+[build-dependencies]
+embed-resource = "3.0.9"

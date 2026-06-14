@@ -1,3 +1,9 @@
+/**
+ * ?: Tells the precompiler to use the UTF-8 code page to compile the resources
+ * See: https://learn.microsoft.com/en-us/windows/win32/menurc/pragma-directives
+ * See: https://learn.microsoft.com/en-us/windows/win32/intl/code-page-identifiers
+ */
+#pragma code_page(65001) // UTF-8
 #include <winuser.h>
 
 // Icono
@@ -12,7 +18,7 @@ FILETYPE 0x1
 {
     BLOCK "StringFileInfo"
     {
-        // Español (España)
+        //?: Español (España)
         BLOCK "040A04B0"  // Español (España), UTF-8
         {
             VALUE "CompanyName", "The Streamer Company SpA."
@@ -26,28 +32,28 @@ FILETYPE 0x1
             VALUE "Comments", "N/A"
         }
 
-        // Español (Latinoamérica / Internacional)
+        //?: Español (Latinoamérica / Internacional)
         BLOCK "040A04E4"  // Español (Latinoamérica), UTF-8
         {
             VALUE "CompanyName", "The Streamer Company SpA."
             VALUE "FileDescription", "Generador de Copias de Seguridad para EasyWorship 2009"
             VALUE "FileVersion", "0.1.0"
             VALUE "InternalName", "ew_backup_gen"
-            VALUE "LegalCopyright", "Copyright © 2025 - The Streamer Company SpA. All rights reserved."
+            VALUE "LegalCopyright", "Copyright © 2026 - The Streamer Company SpA. All rights reserved."
             VALUE "OriginalFilename", "ew_backup_gen.exe"
             VALUE "ProductName", "EW Backup Gen"
             VALUE "ProductVersion", "0.1.0"
             VALUE "Comments", "N/A"
         }
 
-        // Inglés (Estados Unidos) - como respaldo
+        //?: Inglés (Estados Unidos) - como respaldo
         BLOCK "040904B0"  // Inglés (EE.UU.), UTF-8
         {
             VALUE "CompanyName", "The Streamer Company SpA."
             VALUE "FileDescription", "EasyWorship 2009 Backup Generator"
             VALUE "FileVersion", "0.1.0"
             VALUE "InternalName", "ew_backup_gen"
-            VALUE "LegalCopyright", "Copyright © 2025 - The Streamer Company SpA. All rights reserved."
+            VALUE "LegalCopyright", "Copyright © 2026 - The Streamer Company SpA. All rights reserved."
             VALUE "OriginalFilename", "ew_backup_gen.exe"
             VALUE "ProductName", "EW Backup Gen"
             VALUE "ProductVersion", "0.1.0"
@@ -57,6 +63,6 @@ FILETYPE 0x1
     BLOCK "VarFileInfo"
     {
         // Lista de traducciones disponibles
-        VALUE "Translation", 0x40A, 1200, 0x409, 1200 // Español (España), Español (LatAm), Inglés (EE.UU.), UTF-8
+        VALUE "Translation", 0x40A, 1200, 0x409, 1200 //?: Español (España), Español (LatAm), Inglés (EE.UU.), UTF-8
     }
 }
