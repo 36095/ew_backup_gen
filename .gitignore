@@ -1,6 +1,8 @@
 ```
 # Dependencies
-target/
+/target
+/backups
+/.private
 
 # Compiled files
 **/*.rs.bk
