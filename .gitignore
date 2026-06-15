@@ -1,3 +1,7 @@
-/target
-/backups
-/.private
+```
+# Dependencies
+target/
+
+# Compiled files
+**/*.rs.bk
+```
