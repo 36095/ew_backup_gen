@@ -11,8 +11,8 @@ IDI_ICON1 ICON "assets/icon.ico"
 
 // Información de versión
 1 VERSIONINFO
-FILEVERSION 0,1,0,0
-PRODUCTVERSION 0,1,0,0
+FILEVERSION 0,1,1,0
+PRODUCTVERSION 0,1,1,0
 FILEOS 0x4
 FILETYPE 0x1
 {
@@ -23,12 +23,12 @@ FILETYPE 0x1
         {
             VALUE "CompanyName", "The Streamer Company SpA."
             VALUE "FileDescription", "Generador de Copias de Seguridad para EasyWorship 2009"
-            VALUE "FileVersion", "0.1.0"
+            VALUE "FileVersion", "0.1.1"
             VALUE "InternalName", "ew_backup_gen"
             VALUE "LegalCopyright", "Copyright © 2026 - The Streamer Company SpA. All rights reserved."
             VALUE "OriginalFilename", "ew_backup_gen.exe"
             VALUE "ProductName", "EW Backup Gen"
-            VALUE "ProductVersion", "0.1.0"
+            VALUE "ProductVersion", "0.1.1"
             VALUE "Comments", "N/A"
         }
 
@@ -37,12 +37,12 @@ FILETYPE 0x1
         {
             VALUE "CompanyName", "The Streamer Company SpA."
             VALUE "FileDescription", "Generador de Copias de Seguridad para EasyWorship 2009"
-            VALUE "FileVersion", "0.1.0"
+            VALUE "FileVersion", "0.1.1"
             VALUE "InternalName", "ew_backup_gen"
             VALUE "LegalCopyright", "Copyright © 2026 - The Streamer Company SpA. All rights reserved."
             VALUE "OriginalFilename", "ew_backup_gen.exe"
             VALUE "ProductName", "EW Backup Gen"
-            VALUE "ProductVersion", "0.1.0"
+            VALUE "ProductVersion", "0.1.1"
             VALUE "Comments", "N/A"
         }
 
@@ -51,12 +51,12 @@ FILETYPE 0x1
         {
             VALUE "CompanyName", "The Streamer Company SpA."
             VALUE "FileDescription", "EasyWorship 2009 Backup Generator"
-            VALUE "FileVersion", "0.1.0"
+            VALUE "FileVersion", "0.1.1"
             VALUE "InternalName", "ew_backup_gen"
             VALUE "LegalCopyright", "Copyright © 2026 - The Streamer Company SpA. All rights reserved."
             VALUE "OriginalFilename", "ew_backup_gen.exe"
             VALUE "ProductName", "EW Backup Gen"
-            VALUE "ProductVersion", "0.1.0"
+            VALUE "ProductVersion", "0.1.1"
             VALUE "Comments", "N/A"
         }
     }
