@@ -3,17 +3,17 @@ use colored::*; // Importar la crate colored
 use config::{Config, File};
 use dirs::data_local_dir;
 use fs_extra::dir::{CopyOptions, copy};
+use reqwest::Client;
+use self_replace::self_replace;
+use semver::Version;
 use serde::{Deserialize, Serialize};
 use std::collections::BinaryHeap;
+use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, Ordering};
-use tokio_cron_scheduler::{Job, JobScheduler};
-use reqwest::Client;
-use semver::Version;
-use std::io::{self, Write};
 use tempfile::NamedTempFile;
+use tokio_cron_scheduler::{Job, JobScheduler};
 use zip::ZipWriter;
-use self_replace::self_replace_exe;
 
 const COMPANY_NAME: &str = "The Streamer Company SpA.";
 const SERVICE_NAME: &str = "EW Backup Service";
@@ -149,9 +149,15 @@ fn setup_ctrlc_handler() {
 // Función para manejar la instalación de actualizaciones al salir
 fn handle_shutdown_and_update() {
     if UPDATE_PENDING.load(Ordering::SeqCst) {
-        println!("{}", "\n--- Instalando actualización pendiente ---".cyan().bold());
+        println!(
+            "{}",
+            "\n--- Instalando actualización pendiente ---".cyan().bold()
+        );
         if let Err(e) = install_pending_update() {
-            eprintln!("{}", format!("Error al instalar actualización: {}", e).red());
+            eprintln!(
+                "{}",
+                format!("Error al instalar actualización: {}", e).red()
+            );
         }
     }
 }
@@ -159,76 +165,97 @@ fn handle_shutdown_and_update() {
 // Función para verificar actualizaciones desde GitHub
 async fn check_for_updates() -> Result<Option<String>, Box<dyn std::error::Error>> {
     println!("{}", "Verificando actualizaciones...".cyan());
-    
+
     let client = Client::new();
-    let url = format!("https://api.github.com/repos/{}/releases/latest", GITHUB_REPO);
-    
+    let url = format!(
+        "https://api.github.com/repos/{}/releases/latest",
+        GITHUB_REPO
+    );
+
     let response = match client.get(&url).send().await {
         Ok(resp) => resp,
         Err(e) => {
-            println!("{}", format!("No se pudo verificar actualizaciones: {}", e).yellow());
+            println!(
+                "{}",
+                format!("No se pudo verificar actualizaciones: {}", e).yellow()
+            );
             return Ok(None);
         }
     };
-    
+
     if !response.status().is_success() {
-        println!("{}", format!("Error al consultar GitHub: {}", response.status()).yellow());
+        println!(
+            "{}",
+            format!("Error al consultar GitHub: {}", response.status()).yellow()
+        );
         return Ok(None);
     }
-    
+
     let json: serde_json::Value = response.json().await?;
-    
+
     if let Some(latest_version) = json["tag_name"].as_str() {
-        let latest = Version::parse(latest_version.trim_start_matches('v')).unwrap_or(Version::new(0, 0, 0));
+        let latest =
+            Version::parse(latest_version.trim_start_matches('v')).unwrap_or(Version::new(0, 0, 0));
         let current = Version::parse(CURRENT_VERSION).unwrap_or(Version::new(0, 0, 0));
-        
+
         if latest > current {
-            println!("{}", format!("¡Nueva versión disponible: {}!", latest_version).green().bold());
-            
+            println!(
+                "{}",
+                format!("¡Nueva versión disponible: {}!", latest_version)
+                    .green()
+                    .bold()
+            );
+
             if let Some(download_url) = json["assets"][0]["browser_download_url"].as_str() {
                 return Ok(Some(download_url.to_string()));
             }
-            return Ok(Some(format!("https://github.com/{}/releases/tag/{}", GITHUB_REPO, latest_version)));
+            return Ok(Some(format!(
+                "https://github.com/{}/releases/tag/{}",
+                GITHUB_REPO, latest_version
+            )));
         } else {
             println!("{}", "Ya estás usando la última versión.".green());
         }
     }
-    
+
     Ok(None)
 }
 
 // Función para descargar actualización y preparar instalación
 async fn download_and_prepare_update(download_url: &str) -> Result<(), Box<dyn std::error::Error>> {
     println!("{}", "Descargando actualización...".cyan());
-    
+
     let client = Client::new();
     let response = client.get(download_url).send().await?;
-    
+
     if !response.status().is_success() {
         return Err(format!("Error al descargar: {}", response.status()).into());
     }
-    
+
     let bytes = response.bytes().await?;
-    
+
     // Crear archivo temporal en el directorio de datos del servicio
     let service_base = get_service_base_path()?;
     let updates_dir = service_base.join("Updates");
     std::fs::create_dir_all(&updates_dir)?;
-    
+
     let temp_path = updates_dir.join("update_temp.exe");
     let mut temp_file = std::fs::File::create(&temp_path)?;
     temp_file.write_all(&bytes)?;
     temp_file.flush()?;
-    
+
     // Guardar la ruta del archivo temporal para instalación al salir
     if let Ok(mut path_guard) = UPDATE_TEMP_PATH.lock() {
         *path_guard = Some(temp_path.clone());
     }
     UPDATE_PENDING.store(true, Ordering::SeqCst);
-    
+
     println!("{}", "Actualización descargada exitosamente.".green());
-    println!("{}", "La instalación se realizará automáticamente al cerrar el programa.".yellow());
-    
+    println!(
+        "{}",
+        "La instalación se realizará automáticamente al cerrar el programa.".yellow()
+    );
+
     Ok(())
 }
 
@@ -237,28 +264,36 @@ fn install_pending_update() -> Result<(), Box<dyn std::error::Error>> {
     if !UPDATE_PENDING.load(Ordering::SeqCst) {
         return Ok(());
     }
-    
+
     let temp_path = {
-        let guard = UPDATE_TEMP_PATH.lock().map_err(|e| format!("Error al obtener lock: {}", e))?;
+        let guard = UPDATE_TEMP_PATH
+            .lock()
+            .map_err(|e| format!("Error al obtener lock: {}", e))?;
         match &*guard {
             Some(path) => path.clone(),
             None => return Ok(()),
         }
     };
-    
+
     if !temp_path.exists() {
-        println!("{}", "Archivo de actualización no encontrado. Omitiendo instalación.".yellow());
+        println!(
+            "{}",
+            "Archivo de actualización no encontrado. Omitiendo instalación.".yellow()
+        );
         return Ok(());
     }
-    
+
     println!("{}", "Instalando actualización...".cyan());
-    
+
     // Usar self-replace para reemplazar el ejecutable actual
-    self_replace_exe(&temp_path)?;
-    
+    self_replace(&temp_path)?;
+
     println!("{}", "¡Actualización instalada exitosamente!".green());
-    println!("{}", "El nuevo ejecutable se ejecutará en la próxima vez que inicies el programa.".yellow());
-    
+    println!(
+        "{}",
+        "El nuevo ejecutable se ejecutará en la próxima vez que inicies el programa.".yellow()
+    );
+
     Ok(())
 }
 
@@ -266,24 +301,25 @@ fn install_pending_update() -> Result<(), Box<dyn std::error::Error>> {
 fn create_backup_of_self() -> Result<PathBuf, Box<dyn std::error::Error>> {
     let exe_path = std::env::current_exe()?;
     let backup_path = exe_path.with_extension("bak");
-    
+
     let file = std::fs::File::create(&backup_path)?;
     let mut zip = ZipWriter::new(file);
-    
-    let options = zip::write::SimpleFileOptions::default()
-        .compression_method(zip::CompressionMethod::Stored);
-    
-    let exe_name = exe_path.file_name()
+
+    let options =
+        zip::write::SimpleFileOptions::default().compression_method(zip::CompressionMethod::Stored);
+
+    let exe_name = exe_path
+        .file_name()
         .and_then(|n| n.to_str())
         .unwrap_or("backup.exe");
-    
+
     zip.start_file(exe_name, options)?;
-    
+
     let mut exe_file = std::fs::File::open(&exe_path)?;
     io::copy(&mut exe_file, &mut zip)?;
-    
+
     zip.finish()?;
-    
+
     println!("{}", format!("Backup creado: {:?}", backup_path).green());
     Ok(backup_path)
 }
@@ -296,21 +332,27 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .blue()
             .bold()
     );
-    
+
     // Verificar actualizaciones al inicio
     if let Ok(Some(update_url)) = check_for_updates().await {
         println!("{}", "¿Deseas descargar la actualización? (s/n):".yellow());
         let mut input = String::new();
         io::stdin().read_line(&mut input)?;
-        
+
         if input.trim().to_lowercase() == "s" {
             // Crear backup del ejecutable actual antes de actualizar
             if let Ok(backup_path) = create_backup_of_self() {
-                println!("{}", format!("Backup guardado en: {:?}", backup_path).green());
+                println!(
+                    "{}",
+                    format!("Backup guardado en: {:?}", backup_path).green()
+                );
             }
-            
+
             if let Err(e) = download_and_prepare_update(&update_url).await {
-                eprintln!("{}", format!("Error al instalar actualización: {}", e).red());
+                eprintln!(
+                    "{}",
+                    format!("Error al instalar actualización: {}", e).red()
+                );
             }
         }
     }
