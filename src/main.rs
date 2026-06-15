@@ -11,14 +11,13 @@ use std::collections::BinaryHeap;
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, Ordering};
-use tempfile::NamedTempFile;
 use tokio_cron_scheduler::{Job, JobScheduler};
 use zip::ZipWriter;
 
 const COMPANY_NAME: &str = "The Streamer Company SpA.";
 const SERVICE_NAME: &str = "EW Backup Service";
 const CONFIG_FILE_NAME: &str = "config.ini";
-const CURRENT_VERSION: &str = "0.1.0";
+const CURRENT_VERSION: &str = "0.1.1";
 const GITHUB_REPO: &str = "36095/ew_backup_gen";
 
 static SHUTDOWN_REQUESTED: AtomicBool = AtomicBool::new(false);
@@ -172,7 +171,12 @@ async fn check_for_updates() -> Result<Option<String>, Box<dyn std::error::Error
         GITHUB_REPO
     );
 
-    let response = match client.get(&url).send().await {
+    let response = match client
+        .get(&url)
+        .header("User-Agent", format!("EW_Backup_Gen {}", CURRENT_VERSION))
+        .send()
+        .await
+    {
         Ok(resp) => resp,
         Err(e) => {
             println!(

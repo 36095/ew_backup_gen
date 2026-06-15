@@ -3,6 +3,8 @@
 /target
 /backups
 /.private
+/.vscode
+/scripts
 
 # Compiled files
 **/*.rs.bk
